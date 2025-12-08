@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "fullName": "Admin User",
+    "email": "admin@bookmyway.com",
+    "password": "admin123",
+    "role": "admin",
+    "createdAt": "2025-12-08T01:04:26.913Z"
+  },
+  {
+    "id": "2",
+    "fullName": "Demo User",
+    "email": "demo@bookmyway.com",
+    "password": "demo123",
+    "role": "user",
+    "createdAt": "2025-12-08T01:04:26.913Z"
+  },
+  {
+    "id": "3",
+    "fullName": "John Smith",
+    "email": "john@example.com",
+    "password": "password123",
+    "role": "user",
+    "createdAt": "2025-12-08T01:04:26.913Z"
+  }
+]

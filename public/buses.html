@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookMyWay - Buses</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Tailwind CSS CDN for easy styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f8f8; /* Light gray background to match the theme */
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <header>
+        <div class="container header-container">
+            <div class="logo-container">
+                <img src="images/logo.png" alt="BookMyWay Logo" class="logo">
+                <span class="logo-text">BookMyWay</span>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="flights.html">Flights</a>
+                <a href="trains.html">Trains</a>
+                <a href="buses.html" class="active">Buses</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Section -->
+    <main class="flex-grow container mx-auto px-4 py-8 md:py-12">
+        <h1 class="text-4xl font-bold text-gray-800 text-center mb-10">Popular Bus Routes</h1>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Route Card 1 -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-3">Mumbai to Pune</h2>
+                <p class="text-gray-600 mb-4">Approx. Travel Time: 3-4 hours</p>
+                <div class="flex items-center justify-between text-gray-700">
+                    <span class="font-medium">Starting from:</span>
+                    <span class="text-blue-600 font-bold text-lg">₹450</span>
+                </div>
+                <button class="mt-5 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition duration-300">
+                    Find Buses
+                </button>
+            </div>
+
+            <!-- Route Card 2 -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-3">Delhi to Jaipur</h2>
+                <p class="text-gray-600 mb-4">Approx. Travel Time: 5-6 hours</p>
+                <div class="flex items-center justify-between text-gray-700">
+                    <span class="font-medium">Starting from:</span>
+                    <span class="text-blue-600 font-bold text-lg">₹600</span>
+                </div>
+                <button class="mt-5 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition duration-300">
+                    Find Buses
+                </button>
+            </div>
+
+            <!-- Route Card 3 -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-3">Bengaluru to Chennai</h2>
+                <p class="text-gray-600 mb-4">Approx. Travel Time: 6-7 hours</p>
+                <div class="flex items-center justify-between text-gray-700">
+                    <span class="font-medium">Starting from:</span>
+                    <span class="text-blue-600 font-bold text-lg">₹750</span>
+                </div>
+                <button class="mt-5 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition duration-300">
+                    Find Buses
+                </button>
+            </div>
+
+            <!-- Route Card 4 -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-3">Hyderabad to Goa</h2>
+                <p class="text-gray-600 mb-4">Approx. Travel Time: 12-14 hours</p>
+                <div class="flex items-center justify-between text-gray-700">
+                    <span class="font-medium">Starting from:</span>
+                    <span class="text-blue-600 font-bold text-lg">₹1200</span>
+                </div>
+                <button class="mt-5 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition duration-300">
+                    Find Buses
+                </button>
+            </div>
+
+            <!-- Route Card 5 -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-3">Kolkata to Digha</h2>
+                <p class="text-gray-600 mb-4">Approx. Travel Time: 4-5 hours</p>
+                <div class="flex items-center justify-between text-gray-700">
+                    <span class="font-medium">Starting from:</span>
+                    <span class="text-blue-600 font-bold text-lg">₹300</span>
+                </div>
+                <button class="mt-5 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition duration-300">
+                    Find Buses
+                </button>
+            </div>
+
+            <!-- Route Card 6 -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-3">Ahmedabad to Vadodara</h2>
+                <p class="text-gray-600 mb-4">Approx. Travel Time: 2-3 hours</p>
+                <div class="flex items-center justify-between text-gray-700">
+                    <span class="font-medium">Starting from:</span>
+                    <span class="text-blue-600 font-bold text-lg">₹250</span>
+                </div>
+                <button class="mt-5 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition duration-300">
+                    Find Buses
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section - Replicating the homepage footer -->
+    <footer class="bg-gray-800 text-white py-8 px-6 md:px-12 mt-8">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- Company Info -->
+            <div>
+                <h3 class="text-xl font-bold mb-4">BookMyWay</h3>
+                <p class="text-gray-400 text-sm">Your one-stop platform for seamless travel. Enjoy booking convenience for trips.</p>
+                <div class="flex space-x-4 mt-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.776-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33V22H12c5.523 0 10-4.477 10-10z" clip-rule="evenodd" /></svg>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2.417a.75.75 0 01.07.867 1.5 1.5 0 00-.867.07 1.5 1.5 0 00-.07-.867zM16 8a4 4 0 11-8 0 4 4 0 018 0zM17.5 6.5a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5zM14.5 12a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.776-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33V22H12c5.523 0 10-4.477 10-10z" clip-rule="evenodd" /></svg>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 5.892L18.455 12 22 18.108V22H15.892L12 18.455 5.892 22H2V18.108L5.545 12 2 5.892V2h6.108L12 5.545 18.108 2H22v3.892zM12 16.5a4.5 4.5 0 100-9 4.5 4.5 0 000 9z" clip-rule="evenodd" /></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">About Us</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Contact</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Privacy Policy</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Terms of Service</a></li>
+                </ul>
+            </div>
+
+            <!-- Support -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Support</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">FAQ</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Help Center</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Bookings</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Cancellation</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact Info -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Contact Info</h3>
+                <p class="text-gray-400 text-sm">123 Travel Lane, Wanderlust City, 12345</p>
+                <p class="text-gray-400 text-sm mt-2">Email: info@bookmyway.com</p>
+                <p class="text-gray-400 text-sm mt-2">Phone: +1 (555) 123-4567</p>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-500 text-sm">
+            &copy; 2025 BookMyWay. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- JavaScript Integration -->
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+</body>
+<script src="js/auth.js"></script>
+<script src="js/main.js"></script>
+</html>

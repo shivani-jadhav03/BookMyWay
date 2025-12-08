@@ -1,0 +1,39 @@
+{
+  "name": "bookmyway",
+  "version": "1.0.0",
+  "description": "Travel comparison platform for booking flights, buses, and trains",
+  "main": "dist/index.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc -p tsconfig.build.json",
+    "build:watch": "tsc -p tsconfig.build.json --watch",
+    "clean": "node -e \"try{require('fs').rmSync('dist',{recursive:true,force:true})}catch(e){}\"",
+    "prebuild": "npm run clean",
+    "postbuild": "node -e \"const fs=require('fs'),path=require('path');const src='public',dst=path.join('dist','public');(function copy(s,d){if(!fs.existsSync(d)) fs.mkdirSync(d,{recursive:true});for(const e of fs.readdirSync(s,{withFileTypes:true})){const sp=path.join(s,e.name),dp=path.join(d,e.name);e.isDirectory()?copy(sp,dp):fs.copyFileSync(sp,dp);} }) (src,dst);\""
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "typescript": "^5.0.0",
+    "tsx": "^4.0.0",
+    "nodemon": "^3.0.0"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.4.0",
+    "express-validator": "^7.2.0",
+    "axios": "^1.12.1",
+    "querystring": "^0.2.1",
+    "date-fns": "^3.6.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}

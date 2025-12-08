@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - BookMyWay</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Enhanced Login Page Styles */
+    .auth-section {
+      padding: 4rem 0;
+      min-height: 80vh;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      display: flex;
+      align-items: center;
+    }
+
+    .auth-form {
+      max-width: 480px;
+      margin: 0 auto;
+      background: white;
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    }
+
+    .auth-form h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #1f2937;
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #1f2937;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+    }
+
+    .form-group input:focus {
+      border-color: #3B82F6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+      outline: none;
+      background: white;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9CA3AF;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .remember-forgot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 1.25rem 0;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+    }
+
+    .remember-me input {
+      width: auto;
+      margin-right: 0.75rem;
+    }
+
+    .forgot-password {
+      color: #3B82F6;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .cta-button.full-width {
+      width: 100%;
+      padding: 1rem;
+      background: #F97316;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 0.5rem;
+    }
+
+    .cta-button.full-width:hover {
+      background: #EA580C;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(249, 115, 22, 0.15);
+    }
+
+    .auth-link {
+      text-align: center;
+      margin-top: 1.75rem;
+      color: #6B7280;
+      font-size: 0.95rem;
+    }
+
+    .auth-link a {
+      color: #3B82F6;
+      font-weight: 500;
+      text-decoration: none;
+      margin-left: 0.25rem;
+    }
+
+    .auth-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 640px) {
+      .auth-form {
+        padding: 1.75rem;
+        border-radius: 12px;
+      }
+      
+      .auth-form h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Same header as index.html -->
+  <header>
+    <div class="container header-container">
+      <div class="logo-container">
+        <img src="images/logo.png" alt="Logo" class="logo">
+        <span class="logo-text">BookMyWay</span>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="#">Flights</a>
+        <a href="#">Trains</a>
+        <a href="#">Buses</a>
+        <a href="signup.html" class="cta-button">Sign Up</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Login Form Section -->
+  <section class="auth-section">
+    <div class="container">
+      <div class="auth-form">
+        <h2>Sign In to Your Account</h2>
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="Enter your email" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password" required>
+            <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+          </div>
+
+          <div class="remember-forgot">
+            <div class="remember-me">
+              <input type="checkbox" id="remember">
+              <label for="remember">Remember me</label>
+            </div>
+            <a href="#" class="forgot-password">Forgot password?</a>
+          </div>
+
+          <button type="submit" class="cta-button full-width">Sign In</button>
+        </form>
+        <p class="auth-link">Don't have an account? <a href="signup.html">Sign up</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Same footer as index.html -->
+  <footer>
+    <!-- Your footer content here -->
+  </footer>
+
+  <!-- Load authentication system -->
+  <script src="js/auth.js"></script>
+  <script>
+    // Password toggle functionality
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#password');
+
+    togglePassword.addEventListener('click', function() {
+      const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+      password.setAttribute('type', type);
+      this.classList.toggle('fa-eye-slash');
+    });
+
+    // Login form handling with new auth system
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      authManager.handleLogin(e);
+    });
+
+    // Check if user is already logged in and redirect
+    document.addEventListener('DOMContentLoaded', function() {
+      if (authManager.isUserLoggedIn()) {
+        authManager.showMessage('You are already logged in!', 'info');
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1500);
+      }
+    });
+  </script>
+</body>
+</html>

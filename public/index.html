@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookMyWay - Book Flights, Trains & Buses</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- HEADER SECTION -->
+    <header>
+        <div class="container header-container">
+            <div class="logo-container">
+                <img src="images/logo.png" alt="BookMyWay Logo" class="logo">
+                <span class="logo-text">BookMyWay</span>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="flights.html">Flights</a>
+                <a href="trains.html">Trains</a>
+                <a href="buses.html">Buses</a>
+                <a href="signup.html" class="cta-button">Sign Up</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="container hero-content">
+            <h1>Travel Across the World With Ease</h1>
+            <p>Book flights, trains, and buses all in one place. Get the best deals and plan your perfect journey with BookMyWay.</p>
+            
+            <!-- SEARCH FORM -->
+            <div class="search-form">
+                <div class="search-form-header">
+                    <h3><i class="fas fa-search"></i> Find Your Perfect Journey</h3>
+                    <p>Search and compare flights, trains, and buses in one place</p>
+                </div>
+                
+                <form id="searchForm">
+                    <!-- First Row: From and To -->
+                    <div class="form-grid form-grid-2">
+                        <div class="form-group">
+                            <label for="origin">
+                                <i class="fas fa-plane-departure"></i>
+                                From
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="text" id="origin" name="origin" placeholder="Enter departure city" required minlength="2" maxlength="100">
+                                <i class="fas fa-map-marker-alt input-icon"></i>
+                            </div>
+                            <small class="form-hint">e.g., Mumbai, Delhi, Bangalore</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="destination">
+                                <i class="fas fa-plane-arrival"></i>
+                                To
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="text" id="destination" name="destination" placeholder="Enter destination city" required minlength="2" maxlength="100">
+                                <i class="fas fa-map-marker-alt input-icon"></i>
+                            </div>
+                            <small class="form-hint">e.g., Chennai, Kolkata, Pune</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Second Row: Departure and Return -->
+                    <div class="form-grid form-grid-2">
+                        <div class="form-group">
+                            <label for="departure">
+                                <i class="fas fa-calendar-alt"></i>
+                                Departure
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="date" id="departure" name="departure" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="return">
+                                <i class="fas fa-calendar-check"></i>
+                                Return <span class="optional-badge">Optional</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="date" id="return" name="return" placeholder="Select return date">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group transport-type">
+                        <label for="transport">
+                            <i class="fas fa-route"></i>
+                            Transport Type
+                        </label>
+                        <div class="select-wrapper">
+                            <select id="transport" name="transport">
+                                <option value="all">All Transport Types</option>
+                                <option value="flight">Flights Only</option>
+                                <option value="bus">Buses Only</option>
+                                <option value="railway">Trains Only</option>
+                            </select>
+                            <i class="fas fa-chevron-down select-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Provider Status Indicator -->
+                    <div id="provider-status" class="mb-4 text-center">
+                        <div class="flex items-center justify-center text-sm text-gray-600">
+                            <div class="w-2 h-2 rounded-full bg-gray-400 mr-2"></div>
+                            <span>Checking provider status...</span>
+                        </div>
+                    </div>
+                    
+                    <div class="search-btn-container text-center w-full">
+                        <button type="submit" class="search-btn" style="display: block; margin: 1rem auto 0 auto;">
+                            <i class="fas fa-search"></i> Search Best Prices
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES SECTION -->
+    <section class="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Choose BookMyWay?</h2>
+                <p>We provide the best travel experience with our comprehensive booking platform</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Worldwide Coverage</h3>
+                    <p>Book transportation across thousands of destinations worldwide with just a few clicks.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <h3>Best Price Guarantee</h3>
+                    <p>We guarantee the best prices for your flights, trains, and buses or we'll match the difference.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>24/7 Customer Support</h3>
+                    <p>Our dedicated support team is available round the clock to assist you with any queries.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+   <!-- ========== FAQ SECTION ========== -->
+<!-- FAQ Section -->
+<section class="faq-section">
+    <div class="container">
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      
+      <div class="faq-container">
+        <!-- FAQ 1 -->
+        <details>
+          <summary>How do I book multiple transport types?</summary>
+          <div class="faq-answer">
+            <p>Use our "Multi-Mode Journey" feature to combine flights, trains, and buses in one booking.</p>
+          </div>
+        </details>
+  
+        <!-- FAQ 2 -->
+        <details>
+          <summary>What payment methods are accepted?</summary>
+          <div class="faq-answer">
+            <p>We accept credit/debit cards, UPI, net banking, and popular wallets like Paytm and PhonePe.</p>
+          </div>
+        </details>
+  
+        <!-- FAQ 3 -->
+        <details>
+          <summary>Can I modify my booking?</summary>
+          <div class="faq-answer">
+            <p>Yes! Most bookings can be modified up to 24 hours before departure through your account dashboard.</p>
+          </div>
+        </details>
+  
+        <!-- FAQ 4 -->
+        <details>
+          <summary>How does price matching work?</summary>
+          <div class="faq-answer">
+            <p>Found a better price? Submit proof within 24 hours of booking for a price match + 5% extra credit.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>BookMyWay</h3>
+                    <p>Your one-stop platform for seamless multi-transport booking across the globe.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <!-- Add other footer columns here -->
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 BookMyWay. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Integration -->
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Add loading styles for search form
+        const style = document.createElement('style');
+        style.textContent = `
+            .search-btn:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+            .form-group small {
+                display: block;
+                margin-top: 4px;
+                font-size: 0.75rem;
+            }
+            #provider-status {
+                transition: all 0.3s ease;
+            }
+            .animate-spin {
+                animation: spin 1s linear infinite;
+            }
+            @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

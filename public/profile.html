@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - BookMyWay</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo-container">
+                <img src="images/logo.png" alt="BookMyWay Logo" class="logo">
+                <span class="logo-text">BookMyWay</span>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="flights.html">Flights</a>
+                <a href="trains.html">Trains</a>
+                <a href="buses.html">Buses</a>
+                <a href="profile.html" class="active">Profile</a>
+                <a href="signup.html" class="cta-button">Sign Up</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="profile-main">
+        <div class="container">
+            <!-- Loading State -->
+            <div class="loading-state" id="loadingState">
+                <div class="loader"></div>
+                <p>Loading your profile...</p>
+            </div>
+
+            <!-- Not Logged In State -->
+            <div class="not-logged-in" id="notLoggedIn" style="display: none;">
+                <div class="empty-state">
+                    <i class="fas fa-user-slash"></i>
+                    <h2>Please Log In</h2>
+                    <p>You need to log in to view your profile information.</p>
+                    <div class="auth-actions">
+                        <a href="login.html" class="btn btn-primary">Log In</a>
+                        <a href="signup.html" class="btn btn-outline">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Content -->
+            <div class="profile-content" id="profileContent" style="display: none;">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="profile-info">
+                        <h1 id="userFullName">Loading...</h1>
+                        <p id="userEmail">Loading...</p>
+                        <span class="profile-status online">
+                            <i class="fas fa-circle"></i> Online
+                        </span>
+                    </div>
+                </div>
+
+                <div class="profile-sections">
+                    <!-- Account Information -->
+                    <section class="profile-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-user"></i> Account Information</h2>
+                        </div>
+                        <div class="section-content">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <label>Full Name</label>
+                                    <div class="info-value" id="displayFullName">Loading...</div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Email Address</label>
+                                    <div class="info-value" id="displayEmail">Loading...</div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Member Since</label>
+                                    <div class="info-value" id="displayCreatedAt">Loading...</div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Account Status</label>
+                                    <div class="info-value">
+                                        <span class="status-badge active">Active</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Session Information -->
+                    <section class="profile-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-clock"></i> Session Information</h2>
+                        </div>
+                        <div class="section-content">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <label>Last Login</label>
+                                    <div class="info-value" id="displayLoginTime">Loading...</div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Session Status</label>
+                                    <div class="info-value">
+                                        <span class="status-badge active">
+                                            <i class="fas fa-check-circle"></i> Active
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Quick Actions -->
+                    <section class="profile-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+                        </div>
+                        <div class="section-content">
+                            <div class="action-grid">
+                                <button class="action-button" onclick="window.location.href='flights.html'">
+                                    <i class="fas fa-plane"></i>
+                                    <span>Book Flight</span>
+                                </button>
+                                <button class="action-button" onclick="window.location.href='trains.html'">
+                                    <i class="fas fa-train"></i>
+                                    <span>Book Train</span>
+                                </button>
+                                <button class="action-button" onclick="window.location.href='buses.html'">
+                                    <i class="fas fa-bus"></i>
+                                    <span>Book Bus</span>
+                                </button>
+                                <button class="action-button" onclick="refreshProfile()">
+                                    <i class="fas fa-sync-alt"></i>
+                                    <span>Refresh Profile</span>
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Account Settings -->
+                    <section class="profile-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-cog"></i> Account Settings</h2>
+                        </div>
+                        <div class="section-content">
+                            <div class="settings-grid">
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h3>Change Password</h3>
+                                        <p>Update your account password for better security</p>
+                                    </div>
+                                    <button class="pill-action" onclick="showComingSoon()">
+                                        <i class="fas fa-key"></i>
+                                        <span>Change Password</span>
+                                    </button>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h3>Update Profile</h3>
+                                        <p>Edit your personal information and preferences</p>
+                                    </div>
+                                    <button class="pill-action" onclick="showComingSoon()">
+                                        <i class="fas fa-edit"></i>
+                                        <span>Edit Profile</span>
+                                    </button>
+                                </div>
+                                <div class="setting-item danger">
+                                    <div class="setting-info">
+                                        <h3>Delete Account</h3>
+                                        <p>Permanently remove your account and all data</p>
+                                    </div>
+                                    <button class="pill-action danger" onclick="showComingSoon()">
+                                        <i class="fas fa-trash"></i>
+                                        <span>Delete Account</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>BookMyWay</h3>
+                    <p>Your trusted travel companion for flights, trains, and buses.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="flights.html">Flight Booking</a></li>
+                        <li><a href="trains.html">Train Booking</a></li>
+                        <li><a href="buses.html">Bus Booking</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Account</h4>
+                    <ul>
+                        <li><a href="profile.html">My Profile</a></li>
+                        <li><a href="login.html">Login</a></li>
+                        <li><a href="signup.html">Sign Up</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect With Us</h4>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 BookMyWay. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
