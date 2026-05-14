@@ -41,36 +41,37 @@ app.use((req, res, next) => {
 });
 
 // Serve static files from public directory
-app.use(express.static(path.join(__dirname, 'public')));
+const publicDir = path.join(__dirname, '..', 'public');
+app.use(express.static(publicDir));
 
 // Serve the main index.html file
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(publicDir, 'index.html'));
 });
 
 // Serve other HTML pages
 app.get('/trains', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'trains.html'));
+  res.sendFile(path.join(publicDir, 'trains.html'));
 });
 
 app.get('/buses', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'buses.html'));
+  res.sendFile(path.join(publicDir, 'buses.html'));
 });
 
 app.get('/flights', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'flights.html'));
+  res.sendFile(path.join(publicDir, 'flights.html'));
 });
 
 app.get('/results', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'results.html'));
+  res.sendFile(path.join(publicDir, 'results.html'));
 });
 
 app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+  res.sendFile(path.join(publicDir, 'login.html'));
 });
 
 app.get('/signup', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'signup.html'));
+  res.sendFile(path.join(publicDir, 'signup.html'));
 });
 
 app.get('/dashboard', (req, res) => {
@@ -78,7 +79,7 @@ app.get('/dashboard', (req, res) => {
     if (!currentUser || (currentUser.role || 'user') !== 'admin') {
         return res.status(403).send('<h2>Access denied</h2><p>Admin access required.</p>');
     }
-    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+    res.sendFile(path.join(publicDir, 'dashboard.html'));
 });
 
 app.use('/api', apiLimiter);
