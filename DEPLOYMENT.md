@@ -58,8 +58,8 @@ Render is a cloud platform that makes it easy to deploy web services. It offers 
 
    For Firebase Admin, you'll need to:
    - Download service account key from Firebase Console > Project Settings > Service Accounts
-   - Convert the entire JSON content to a single line and set as `GOOGLE_APPLICATION_CREDENTIALS` environment variable
-   - Example: `GOOGLE_APPLICATION_CREDENTIALS={"type":"service_account","project_id":"...","private_key":"...",...}`
+   - Convert the entire JSON content to a single line and set as `GOOGLE_APPLICATION_CREDENTIALS_JSON` environment variable
+   - Example: `GOOGLE_APPLICATION_CREDENTIALS_JSON={"type":"service_account","project_id":"...","private_key":"...",...}`
    - Make sure to properly escape quotes and newlines when converting to a single line
 
 7. **Deploy**
@@ -132,9 +132,9 @@ Vercel is optimized for frontend but can handle Node.js backends.
    - Go to Project Settings > Service Accounts
    - Generate new private key
    - Download JSON file
-   - For Render: Convert the entire JSON content to a single line and set as `GOOGLE_APPLICATION_CREDENTIALS` environment variable
-   - For Railway: Set as environment variable `GOOGLE_APPLICATION_CREDENTIALS` with the JSON content
-   - Important: The firebaseAdminConfig.js file now reads from environment variables, so you don't need to upload the JSON file
+   - For Render: Convert the entire JSON content to a single line and set as `GOOGLE_APPLICATION_CREDENTIALS_JSON` environment variable
+   - For Railway: Set as environment variable `GOOGLE_APPLICATION_CREDENTIALS_JSON` with the JSON content
+   - Important: The firebaseAdminConfig.js file now reads from `GOOGLE_APPLICATION_CREDENTIALS_JSON` environment variable
 
 ## Post-Deployment Checklist
 
