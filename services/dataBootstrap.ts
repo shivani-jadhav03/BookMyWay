@@ -34,7 +34,7 @@ function resetEphemeralData() {
 /**
  * Bootstraps on-disk data stores; state is cleared each start for an ephemeral runtime.
  */
-export function bootstrapDataStores() {
+export async function bootstrapDataStores() {
     // Always clear runtime data so state does not persist between server runs
     resetEphemeralData();
 
@@ -47,7 +47,7 @@ export function bootstrapDataStores() {
     const analyticsSnapshot = AnalyticsService.init();
 
     return {
-        usersCount: users.length,
+        usersCount: (await users).length,
         currentUserEmail: currentUser?.email || null,
         analytics: analyticsSnapshot
     };

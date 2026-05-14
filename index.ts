@@ -17,8 +17,11 @@ const PORT = process.env.PORT || 3000;
 const userManager = new UserManager();
 
 // Bootstrap persisted data on startup
-const bootstrapInfo = bootstrapDataStores();
-console.log('Data bootstrap:', bootstrapInfo);
+bootstrapDataStores().then(bootstrapInfo => {
+  console.log('Data bootstrap:', bootstrapInfo);
+}).catch(error => {
+  console.error('Data bootstrap failed:', error);
+});
 
 // Basic middleware setup
 app.use(cors());

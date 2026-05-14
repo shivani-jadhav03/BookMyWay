@@ -51,7 +51,7 @@ export class UserManager {
                     await auth.getUserByEmail(adminEmail);
                     console.log('Admin user already exists in Firebase');
                 } catch (error) {
-                    if (error.code === 'auth/user-not-found') {
+                    if ((error as any).code === 'auth/user-not-found') {
                         console.log('Creating admin user in Firebase...');
                         const userRecord = await auth.createUser({
                             email: adminEmail,
@@ -104,7 +104,7 @@ export class UserManager {
                     await auth.getUserByEmail(email);
                     throw new Error('User with this email already exists');
                 } catch (error) {
-                    if (error.code !== 'auth/user-not-found') {
+                    if ((error as any).code !== 'auth/user-not-found') {
                         throw error;
                     }
                 }
@@ -132,7 +132,7 @@ export class UserManager {
                 };
             } catch (error) {
                 console.error('Firebase registration error:', error);
-                throw new Error(error.message || 'Registration failed');
+                throw new Error((error as any).message || 'Registration failed');
             }
         } else {
             // Fallback to file-based storage
@@ -147,7 +147,7 @@ export class UserManager {
         const usersFilePath = path.join(__dirname, '../data/users.txt');
         
         // Get existing users
-        let users = [];
+        let users: any[] = [];
         try {
             if (fs.existsSync(usersFilePath)) {
                 const data = fs.readFileSync(usersFilePath, 'utf8');

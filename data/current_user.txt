@@ -1,7 +1,0 @@
-{
-  "id": "PKWzP69b8lMarKbLCpprEKfYpfq2",
-  "fullName": "Admin User",
-  "email": "admin@bookmyway.com",
-  "role": "admin",
-  "loginTime": "2026-05-14T15:06:22.344Z"
-}
