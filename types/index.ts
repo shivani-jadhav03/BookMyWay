@@ -37,6 +37,8 @@ export interface TravelOption {
   class?: string;
   operator?: string;
   stops?: number;
+  amenities?: string[];
+  bookingUrl?: string;
 }
 
 export interface SearchResponse {

@@ -9,45 +9,47 @@ export class PriceServices {
     date: string,
     trainClass: string = 'SL'
   ): Promise<TravelOption[]> {
-    // Check if RapidAPI key is available
     const rapidApiKey = process.env.RAPIDAPI_KEY;
     const indianRailwaysHost = process.env.INDIAN_RAILWAYS_API_HOST;
 
-    if (rapidApiKey && indianRailwaysHost) {
-      try {
-        const formattedDate = format(parse(date, 'yyyy-MM-dd', new Date()), 'yyyyMMdd');
-        
-        const response = await ApiClient.get(
-          `https://${indianRailwaysHost}/api/v2/TrainBetweenStations`,
-          {
-            fromStationCode: fromStation.code,
-            toStationCode: toStation.code,
-            dateOfJourney: formattedDate
-          },
-          {
-            'X-RapidAPI-Key': rapidApiKey,
-            'X-RapidAPI-Host': indianRailwaysHost
-          },
-          true // use cache
-        );
-
-        if (response.success && response.data) {
-          return this.parseTrainResponse(response.data, fromStation, toStation, trainClass);
-        }
-      } catch (error) {
-        console.error('RapidAPI train fetch failed, using fallback:', error);
-      }
+    if (!rapidApiKey || !indianRailwaysHost) {
+      console.warn('RapidAPI credentials not configured for trains');
+      return [];
     }
 
-    // Return fallback data when API is not configured or fails
-    return this.getFallbackTrainData(fromStation, toStation, trainClass);
+    try {
+      const formattedDate = format(parse(date, 'yyyy-MM-dd', new Date()), 'yyyyMMdd');
+      
+      const response = await ApiClient.get(
+        `https://${indianRailwaysHost}/api/v2/TrainBetweenStations`,
+        {
+          fromStationCode: fromStation.code,
+          toStationCode: toStation.code,
+          dateOfJourney: formattedDate
+        },
+        {
+          'X-RapidAPI-Key': rapidApiKey,
+          'X-RapidAPI-Host': indianRailwaysHost
+        },
+        true // use cache
+      );
+
+      if (response.success && response.data) {
+        return this.parseTrainResponse(response.data, fromStation, toStation, trainClass, date);
+      }
+    } catch (error) {
+      console.error('RapidAPI train fetch failed:', error);
+    }
+
+    return [];
   }
 
   private static parseTrainResponse(
     data: any,
     fromStation: LocationSearchResult,
     toStation: LocationSearchResult,
-    trainClass: string
+    trainClass: string,
+    date: string
   ): TravelOption[] {
     const getTrainAmenities = (cls: string) => {
       const baseAmenities = ['Charging Point', 'Reading Light'];
@@ -79,12 +81,14 @@ export class PriceServices {
       '1A': 8.0
     };
 
-    // Parse the API response based on the actual structure
     const trains = data.data || data.trains || [];
     
     return trains.slice(0, 10).map((train: any) => {
-      const basePrice = train.price || 800 + Math.floor(Math.random() * 1200);
+      const basePrice = train.price || 800;
       const adjustedPrice = Math.round(basePrice * (classPriceMultiplier[trainClass as keyof typeof classPriceMultiplier] || 1.0));
+      
+      // Generate IRCTC booking URL
+      const bookingUrl = `https://www.irctc.co.in/nget/train-search?from=${fromStation.code}&to=${toStation.code}&date=${date}&class=${trainClass}`;
       
       return {
         id: `train-${train.trainNumber || train.train_no}-${Date.now()}`,
@@ -109,79 +113,8 @@ export class PriceServices {
         bookingReference: train.trainNumber || train.train_no,
         class: trainClass,
         operator: train.trainName || train.name || 'Express',
-        amenities: getTrainAmenities(trainClass)
-      };
-    });
-  }
-
-  private static getFallbackTrainData(
-    fromStation: LocationSearchResult,
-    toStation: LocationSearchResult,
-    trainClass: string
-  ): TravelOption[] {
-    const getTrainAmenities = (cls: string) => {
-      const baseAmenities = ['Charging Point', 'Reading Light'];
-      switch (cls) {
-        case '1A':
-          return [...baseAmenities, 'AC', 'Bed Sheet', 'Pillow', 'Blanket', 'Meals'];
-        case '2A':
-          return [...baseAmenities, 'AC', 'Bed Sheet', 'Pillow', 'Blanket'];
-        case '3A':
-          return [...baseAmenities, 'AC', 'Bed Sheet', 'Pillow'];
-        case '3E':
-          return [...baseAmenities, 'AC'];
-        case 'CC':
-          return [...baseAmenities, 'AC'];
-        case 'SL':
-          return [...baseAmenities, 'Fan'];
-        default:
-          return baseAmenities;
-      }
-    };
-
-    const classPriceMultiplier = {
-      '2S': 0.3,
-      'SL': 1.0,
-      '3E': 1.8,
-      'CC': 2.2,
-      '3A': 2.8,
-      '2A': 4.5,
-      '1A': 8.0
-    };
-
-    const trainNames = ['Express', 'Superfast', 'Duronto', 'Rajdhani', 'Shatabdi'];
-    const trainNumbers = ['12001', '12002', '12003', '12004', '12005'];
-    
-    return trainNumbers.map((num, index) => {
-      const basePrice = 800 + Math.floor(Math.random() * 1200);
-      const adjustedPrice = Math.round(basePrice * (classPriceMultiplier[trainClass as keyof typeof classPriceMultiplier] || 1.0));
-      const hours = 4 + Math.floor(Math.random() * 8);
-      const minutes = Math.floor(Math.random() * 60);
-      
-      return {
-        id: `train-${num}-${Date.now()}-${index}`,
-        provider: 'IRCTC',
-        type: 'train' as const,
-        from: {
-          code: fromStation.code,
-          name: fromStation.name,
-          time: `${String(6 + index).padStart(2, '0')}:00`
-        },
-        to: {
-          code: toStation.code,
-          name: toStation.name,
-          time: `${String(10 + hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
-        },
-        duration: `${hours}h ${minutes}m`,
-        price: {
-          amount: adjustedPrice,
-          currency: 'INR'
-        },
-        availability: true,
-        bookingReference: num,
-        class: trainClass,
-        operator: `${trainNames[index]} Express`,
-        amenities: getTrainAmenities(trainClass)
+        amenities: getTrainAmenities(trainClass),
+        bookingUrl
       };
     });
   }
@@ -191,47 +124,52 @@ export class PriceServices {
     toStation: LocationSearchResult,
     date: string
   ): Promise<TravelOption[]> {
-    // Check if RedBus API key is available
     const redBusApiKey = process.env.REDBUS_API_KEY;
 
-    if (redBusApiKey) {
-      try {
-        const formattedDate = format(parse(date, 'yyyy-MM-dd', new Date()), 'yyyyMMdd');
-        
-        const response = await ApiClient.post(
-          'https://api.redbus.in/search',
-          {
-            source: fromStation.code,
-            destination: toStation.code,
-            dateOfJourney: formattedDate
-          },
-          {
-            'Authorization': `Bearer ${redBusApiKey}`
-          },
-          true // use cache
-        );
-
-        if (response.success && response.data) {
-          return this.parseBusResponse(response.data, fromStation, toStation);
-        }
-      } catch (error) {
-        console.error('RedBus API fetch failed, using fallback:', error);
-      }
+    if (!redBusApiKey) {
+      console.warn('RedBus API key not configured for buses');
+      return [];
     }
 
-    // Return fallback data when API is not configured or fails
-    return this.getFallbackBusData(fromStation, toStation);
+    try {
+      const formattedDate = format(parse(date, 'yyyy-MM-dd', new Date()), 'yyyyMMdd');
+      
+      const response = await ApiClient.post(
+        'https://api.redbus.in/search',
+        {
+          source: fromStation.code,
+          destination: toStation.code,
+          dateOfJourney: formattedDate
+        },
+        {
+          'Authorization': `Bearer ${redBusApiKey}`
+        },
+        true // use cache
+      );
+
+      if (response.success && response.data) {
+        return this.parseBusResponse(response.data, fromStation, toStation, date);
+      }
+    } catch (error) {
+      console.error('RedBus API fetch failed:', error);
+    }
+
+    return [];
   }
 
   private static parseBusResponse(
     data: any,
     fromStation: LocationSearchResult,
-    toStation: LocationSearchResult
+    toStation: LocationSearchResult,
+    date: string
   ): TravelOption[] {
     const amenities = ['AC', 'WiFi', 'Charging Points', 'Water Bottle', 'Blanket', 'Recliner Seats'];
     const buses = data.buses || data.data || [];
     
     return buses.slice(0, 15).map((bus: any) => {
+      // Generate RedBus booking URL
+      const bookingUrl = `https://www.redbus.in/bus-ticket-booking?from=${fromStation.code}&to=${toStation.code}&onward=${date}`;
+      
       return {
         id: `bus-${bus.id || bus.busId}-${Date.now()}`,
         provider: 'RedBus',
@@ -248,54 +186,15 @@ export class PriceServices {
         },
         duration: bus.duration || bus.travelTime || 'N/A',
         price: {
-          amount: bus.price || bus.fare || 500 + Math.floor(Math.random() * 1500),
+          amount: bus.price || bus.fare || 500,
           currency: 'INR'
         },
         availability: bus.availableSeats > 0,
         bookingReference: bus.id || bus.busId,
         operator: bus.operatorName || bus.operator || 'Bus Operator',
         stops: bus.stops || 0,
-        amenities: amenities.slice(0, 4 + Math.floor(Math.random() * 2))
-      };
-    });
-  }
-
-  private static getFallbackBusData(
-    fromStation: LocationSearchResult,
-    toStation: LocationSearchResult
-  ): TravelOption[] {
-    const busOperators = ['Neeta Travels', 'Himachal Volvo', 'Maharashtra Travels', 'Royal Cruiser', 'SRS Travels'];
-    const amenities = ['AC', 'WiFi', 'Charging Points', 'Water Bottle', 'Blanket', 'Recliner Seats'];
-    
-    return busOperators.map((operator, index) => {
-      const hours = 5 + Math.floor(Math.random() * 10);
-      const minutes = Math.floor(Math.random() * 60);
-      const price = 500 + Math.floor(Math.random() * 1500);
-      
-      return {
-        id: `bus-${index}-${Date.now()}`,
-        provider: 'RedBus',
-        type: 'bus' as const,
-        from: {
-          code: fromStation.code,
-          name: fromStation.name,
-          time: `${String(5 + index).padStart(2, '0')}:30`
-        },
-        to: {
-          code: toStation.code,
-          name: toStation.name,
-          time: `${String(10 + hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
-        },
-        duration: `${hours}h ${minutes}m`,
-        price: {
-          amount: price,
-          currency: 'INR'
-        },
-        availability: true,
-        bookingReference: `BUS${1000 + index}`,
-        operator: operator,
-        stops: Math.floor(Math.random() * 3),
-        amenities: amenities.slice(0, 4 + Math.floor(Math.random() * 2))
+        amenities: amenities.slice(0, 4 + Math.floor(Math.random() * 2)),
+        bookingUrl
       };
     });
   }
@@ -306,42 +205,44 @@ export class PriceServices {
     date: string,
     flightClass: string = 'e'
   ): Promise<TravelOption[]> {
-    // Check if Aviation Stack API key is available
     const aviationStackKey = process.env.AVIATION_STACK_API_KEY;
 
-    if (aviationStackKey) {
-      try {
-        const formattedDate = format(parse(date, 'yyyy-MM-dd', new Date()), 'yyyy-MM-dd');
-        
-        const response = await ApiClient.get(
-          'http://api.aviationstack.com/v1/flights',
-          {
-            access_key: aviationStackKey,
-            dep_iata: fromAirport.code,
-            arr_iata: toAirport.code,
-            flight_date: formattedDate
-          },
-          {},
-          true // use cache
-        );
-
-        if (response.success && response.data) {
-          return this.parseFlightResponse(response.data, fromAirport, toAirport, flightClass);
-        }
-      } catch (error) {
-        console.error('Aviation Stack API fetch failed, using fallback:', error);
-      }
+    if (!aviationStackKey) {
+      console.warn('Aviation Stack API key not configured for flights');
+      return [];
     }
 
-    // Return fallback data when API is not configured or fails
-    return this.getFallbackFlightData(fromAirport, toAirport, flightClass);
+    try {
+      const formattedDate = format(parse(date, 'yyyy-MM-dd', new Date()), 'yyyy-MM-dd');
+      
+      const response = await ApiClient.get(
+        'http://api.aviationstack.com/v1/flights',
+        {
+          access_key: aviationStackKey,
+          dep_iata: fromAirport.code,
+          arr_iata: toAirport.code,
+          flight_date: formattedDate
+        },
+        {},
+        true // use cache
+      );
+
+      if (response.success && response.data) {
+        return this.parseFlightResponse(response.data, fromAirport, toAirport, flightClass, date);
+      }
+    } catch (error) {
+      console.error('Aviation Stack API fetch failed:', error);
+    }
+
+    return [];
   }
 
   private static parseFlightResponse(
     data: any,
     fromAirport: LocationSearchResult,
     toAirport: LocationSearchResult,
-    flightClass: string
+    flightClass: string,
+    date: string
   ): TravelOption[] {
     const classNames = {
       'e': 'Economy',
@@ -359,6 +260,10 @@ export class PriceServices {
     return flights.slice(0, 15).map((flight: any) => {
       const baseFare = flight.price?.amount || flight.price || 5000;
       const adjustedPrice = Math.round(baseFare * (classPriceMultiplier[flightClass as keyof typeof classPriceMultiplier] || 1.0));
+      
+      // Generate airline booking URL based on airline
+      const airlineName = flight.airline?.name || flight.airlineName || '';
+      const bookingUrl = this.generateFlightBookingUrl(airlineName, fromAirport.code, toAirport.code, date);
       
       return {
         id: `flight-${flight.flight?.iata || flight.flightNumber}-${Date.now()}`,
@@ -381,64 +286,33 @@ export class PriceServices {
         },
         availability: flight.flight_status === 'active' || flight.status === 'scheduled',
         bookingReference: flight.flight?.iata || flight.flightNumber || flight.id,
-        operator: flight.airline?.name || flight.airlineName || 'Airline',
+        operator: airlineName || 'Airline',
         stops: flight.stops || 0,
         class: classNames[flightClass as keyof typeof classNames] || 'Economy',
-        amenities: ['AC', 'In-flight Entertainment', 'Meals', 'Baggage Allowance']
+        amenities: ['AC', 'In-flight Entertainment', 'Meals', 'Baggage Allowance'],
+        bookingUrl
       };
     });
   }
 
-  private static getFallbackFlightData(
-    fromAirport: LocationSearchResult,
-    toAirport: LocationSearchResult,
-    flightClass: string
-  ): TravelOption[] {
-    const airlines = ['Air India', 'IndiGo', 'SpiceJet', 'Vistara', 'GoAir'];
-    const classNames = {
-      'e': 'Economy',
-      'b': 'Business',
-      'w': 'Premium'
-    };
-    const classPriceMultiplier = {
-      'e': 1.0,
-      'b': 2.5,
-      'w': 4.0
-    };
+  private static generateFlightBookingUrl(airline: string, from: string, to: string, date: string): string {
+    const airlineLower = airline.toLowerCase();
     
-    return airlines.map((airline, index) => {
-      const baseFare = 5000 + Math.floor(Math.random() * 5000);
-      const adjustedPrice = Math.round(baseFare * (classPriceMultiplier[flightClass as keyof typeof classPriceMultiplier] || 1.0));
-      const hours = 1 + Math.floor(Math.random() * 4);
-      const minutes = Math.floor(Math.random() * 60);
-      
-      return {
-        id: `flight-${index}-${Date.now()}`,
-        provider: 'Aviation Stack',
-        type: 'flight' as const,
-        from: {
-          code: fromAirport.code,
-          name: fromAirport.name,
-          time: `${String(6 + index).padStart(2, '0')}:00`
-        },
-        to: {
-          code: toAirport.code,
-          name: toAirport.name,
-          time: `${String(7 + hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
-        },
-        duration: `${hours}h ${minutes}m`,
-        price: {
-          amount: adjustedPrice,
-          currency: 'INR'
-        },
-        availability: true,
-        bookingReference: `FL${1000 + index}`,
-        operator: airline,
-        stops: Math.floor(Math.random() * 2),
-        class: classNames[flightClass as keyof typeof classNames] || 'Economy',
-        amenities: ['AC', 'In-flight Entertainment', 'Meals', 'Baggage Allowance']
-      };
-    });
+    // Map airlines to their booking URLs
+    if (airlineLower.includes('air india')) {
+      return `https://www.airindia.com/in/flights?from=${from}&to=${to}&date=${date}`;
+    } else if (airlineLower.includes('indigo')) {
+      return `https://www.goindigo.in/?from=${from}&to=${to}&date=${date}`;
+    } else if (airlineLower.includes('spicejet')) {
+      return `https://www.spicejet.com/?from=${from}&to=${to}&date=${date}`;
+    } else if (airlineLower.includes('vistara')) {
+      return `https://www.airvistara.com/?from=${from}&to=${to}&date=${date}`;
+    } else if (airlineLower.includes('goair')) {
+      return `https://www.goair.in/?from=${from}&to=${to}&date=${date}`;
+    }
+    
+    // Default to a generic flight search
+    return `https://www.google.com/travel/flights?q=flights%20from%20${from}%20to%20${to}%20on%20${date}`;
   }
 
   static async fetchAllPrices(
@@ -448,6 +322,7 @@ export class PriceServices {
     flightClass: string = 'e',
     trainClass: string = 'SL'
   ): Promise<TravelOption[]> {
+    // Run all API requests in parallel for optimal speed
     const allPromises: Promise<TravelOption[]>[] = [];
 
     if (fromLocations.train.length > 0 && toLocations.train.length > 0) {
@@ -468,8 +343,10 @@ export class PriceServices {
       );
     }
 
+    // Use Promise.allSettled to ensure all requests complete even if some fail
     const results = await Promise.allSettled(allPromises);
     
+    // Return all successful results, filter by availability
     return results
       .filter((result): result is PromiseFulfilledResult<TravelOption[]> => result.status === 'fulfilled')
       .flatMap(result => result.value)

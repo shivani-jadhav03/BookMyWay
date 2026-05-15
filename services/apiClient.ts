@@ -45,7 +45,7 @@ export class ApiClient {
 
   private static getInstance(): AxiosInstance {
     if (!this.axiosInstance) {
-      const timeout = parseInt(process.env.API_TIMEOUT_MS || '10000', 10);
+      const timeout = parseInt(process.env.API_TIMEOUT_MS || '5000', 10);
       
       this.axiosInstance = axios.create({
         timeout,

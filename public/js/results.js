@@ -529,11 +529,6 @@ class ResultsPageHandler {
             return;
         }
 
-        // Format date from YYYY-MM-DD to DDMMYYYY for trains/flights
-        const formattedDate = this.formatDateForBooking(searchDate);
-        // Format date from YYYY-MM-DD to YYYYMMDD for buses  
-        const formattedDateBus = this.formatDateForBusBooking(searchDate);
-
         // Show booking confirmation with user info
         const currentUser = authManager.getCurrentUser();
         authManager.showMessage(`Redirecting to booking for ${currentUser.fullName}...`, 'success');
@@ -563,18 +558,24 @@ class ResultsPageHandler {
             console.warn('Failed to record booking event', error);
         }
 
-        // Redirect based on transport type
+        // Use bookingUrl from backend response if available
+        if (option.bookingUrl) {
+            window.open(option.bookingUrl, '_blank');
+            return;
+        }
+
+        // Fallback to provider-specific URLs if bookingUrl not available
         switch (option.type) {
             case 'train':
-                const trainUrl = `https://www.ixigo.com/search/result/train/${option.from.code}/${option.to.code}/${formattedDate}//1/0/0/0/ALL`;
+                const trainUrl = `https://www.irctc.co.in/nget/train-search?from=${option.from.code}&to=${option.to.code}&date=${searchDate}`;
                 window.open(trainUrl, '_blank');
                 break;
             case 'flight':
-                const flightUrl = `https://www.ixigo.com/search/result/flight?from=${option.from.code}&to=${option.to.code}&date=${formattedDate}&adults=1&children=0&infants=0&class=b&source=Search+Form`;
+                const flightUrl = `https://www.google.com/travel/flights?q=flights%20from%20${option.from.code}%20to%20${option.to.code}%20on%20${searchDate}`;
                 window.open(flightUrl, '_blank');
                 break;
             case 'bus':
-                const busUrl = `https://www.goibibo.com/bus/search?bid=bus-${option.from.name.toLowerCase().replace(/\s+/g, '')}-${option.to.name.toLowerCase().replace(/\s+/g, '')}-${formattedDateBus}-0-0-0-0-GICC1798-GICC1744`;
+                const busUrl = `https://www.redbus.in/bus-ticket-booking?from=${option.from.code}&to=${option.to.code}&onward=${searchDate}`;
                 window.open(busUrl, '_blank');
                 break;
             default:
@@ -588,28 +589,6 @@ class ResultsPageHandler {
         }
         
         return this.searchResults.data.options.find(option => option.id === optionId);
-    }
-
-    formatDateForBooking(dateString) {
-        // Convert from YYYY-MM-DD to DDMMYYYY
-        const dateParts = dateString.split('-');
-        if (dateParts.length !== 3) {
-            return dateString;
-        }
-        
-        const [year, month, day] = dateParts;
-        return `${day}${month}${year}`;
-    }
-
-    formatDateForBusBooking(dateString) {
-        // Convert from YYYY-MM-DD to YYYYMMDD
-        const dateParts = dateString.split('-');
-        if (dateParts.length !== 3) {
-            return dateString;
-        }
-        
-        const [year, month, day] = dateParts;
-        return `${year}${month}${day}`;
     }
 }
 
