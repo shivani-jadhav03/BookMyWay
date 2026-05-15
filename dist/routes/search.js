@@ -12,7 +12,7 @@ const validateSearchRequest = (req, res, next) => {
     }
     next();
 };
-router.get('/', validateSearchRequest, async (req, res, next) => {
+router.get('/', validateSearchRequest, async (req, res) => {
     try {
         const searchParams = {
             from: req.query.from,
@@ -22,15 +22,31 @@ router.get('/', validateSearchRequest, async (req, res, next) => {
             flightClass: req.query.flightClass,
             trainClass: req.query.trainClass
         };
-        console.log('Search request:', searchParams);
+        console.log('[Search Route] Search request:', searchParams);
         const result = await AggregationService.searchTravelOptions(searchParams);
+        console.log('[Search Route] Result:', { success: result.success, optionsCount: result.data.options.length, errors: result.errors });
+        // Always return a valid JSON response, never let it throw
         if (!result.success && result.errors?.length) {
             return res.status(400).json(result);
         }
         res.json(result);
     }
     catch (error) {
-        next(error);
+        console.error('[Search Route] Error:', error);
+        // Never return 502, always return a valid JSON response
+        res.status(500).json({
+            success: false,
+            data: {
+                options: [],
+                searchParams: {
+                    from: req.query.from,
+                    to: req.query.to,
+                    date: req.query.date
+                },
+                timestamp: new Date().toISOString()
+            },
+            errors: ['Internal server error. Please try again later.']
+        });
     }
 });
 router.get('/status', async (req, res, next) => {

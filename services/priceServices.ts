@@ -12,13 +12,17 @@ export class PriceServices {
     const rapidApiKey = process.env.RAPIDAPI_KEY;
     const indianRailwaysHost = process.env.INDIAN_RAILWAYS_API_HOST;
 
+    console.log('[Train API] Fetching trains:', { from: fromStation.code, to: toStation.code, date, trainClass, hasApiKey: !!rapidApiKey, hasHost: !!indianRailwaysHost });
+
     if (!rapidApiKey || !indianRailwaysHost) {
-      console.warn('RapidAPI credentials not configured for trains');
+      console.warn('[Train API] RapidAPI credentials not configured for trains');
       return [];
     }
 
     try {
       const formattedDate = format(parse(date, 'yyyy-MM-dd', new Date()), 'yyyyMMdd');
+      
+      console.log('[Train API] Request params:', { fromStationCode: fromStation.code, toStationCode: toStation.code, dateOfJourney: formattedDate });
       
       const response = await ApiClient.get(
         `https://${indianRailwaysHost}/api/v2/TrainBetweenStations`,
@@ -34,13 +38,18 @@ export class PriceServices {
         true // use cache
       );
 
+      console.log('[Train API] Response:', { success: response.success, hasData: !!response.data, error: response.error });
+
       if (response.success && response.data) {
-        return this.parseTrainResponse(response.data, fromStation, toStation, trainClass, date);
+        const parsed = this.parseTrainResponse(response.data, fromStation, toStation, trainClass, date);
+        console.log('[Train API] Parsed', parsed.length, 'trains');
+        return parsed;
       }
     } catch (error) {
-      console.error('RapidAPI train fetch failed:', error);
+      console.error('[Train API] Fetch failed:', error);
     }
 
+    console.log('[Train API] Returning empty array');
     return [];
   }
 
@@ -126,13 +135,17 @@ export class PriceServices {
   ): Promise<TravelOption[]> {
     const redBusApiKey = process.env.REDBUS_API_KEY;
 
+    console.log('[Bus API] Fetching buses:', { from: fromStation.code, to: toStation.code, date, hasApiKey: !!redBusApiKey });
+
     if (!redBusApiKey) {
-      console.warn('RedBus API key not configured for buses');
+      console.warn('[Bus API] RedBus API key not configured for buses');
       return [];
     }
 
     try {
       const formattedDate = format(parse(date, 'yyyy-MM-dd', new Date()), 'yyyyMMdd');
+      
+      console.log('[Bus API] Request params:', { source: fromStation.code, destination: toStation.code, dateOfJourney: formattedDate });
       
       const response = await ApiClient.post(
         'https://api.redbus.in/search',
@@ -147,13 +160,18 @@ export class PriceServices {
         true // use cache
       );
 
+      console.log('[Bus API] Response:', { success: response.success, hasData: !!response.data, error: response.error });
+
       if (response.success && response.data) {
-        return this.parseBusResponse(response.data, fromStation, toStation, date);
+        const parsed = this.parseBusResponse(response.data, fromStation, toStation, date);
+        console.log('[Bus API] Parsed', parsed.length, 'buses');
+        return parsed;
       }
     } catch (error) {
-      console.error('RedBus API fetch failed:', error);
+      console.error('[Bus API] Fetch failed:', error);
     }
 
+    console.log('[Bus API] Returning empty array');
     return [];
   }
 
@@ -207,13 +225,17 @@ export class PriceServices {
   ): Promise<TravelOption[]> {
     const aviationStackKey = process.env.AVIATION_STACK_API_KEY;
 
+    console.log('[Flight API] Fetching flights:', { from: fromAirport.code, to: toAirport.code, date, flightClass, hasApiKey: !!aviationStackKey });
+
     if (!aviationStackKey) {
-      console.warn('Aviation Stack API key not configured for flights');
+      console.warn('[Flight API] Aviation Stack API key not configured for flights');
       return [];
     }
 
     try {
       const formattedDate = format(parse(date, 'yyyy-MM-dd', new Date()), 'yyyy-MM-dd');
+      
+      console.log('[Flight API] Request params:', { access_key: '***', dep_iata: fromAirport.code, arr_iata: toAirport.code, flight_date: formattedDate });
       
       const response = await ApiClient.get(
         'http://api.aviationstack.com/v1/flights',
@@ -227,13 +249,18 @@ export class PriceServices {
         true // use cache
       );
 
+      console.log('[Flight API] Response:', { success: response.success, hasData: !!response.data, error: response.error });
+
       if (response.success && response.data) {
-        return this.parseFlightResponse(response.data, fromAirport, toAirport, flightClass, date);
+        const parsed = this.parseFlightResponse(response.data, fromAirport, toAirport, flightClass, date);
+        console.log('[Flight API] Parsed', parsed.length, 'flights');
+        return parsed;
       }
     } catch (error) {
-      console.error('Aviation Stack API fetch failed:', error);
+      console.error('[Flight API] Fetch failed:', error);
     }
 
+    console.log('[Flight API] Returning empty array');
     return [];
   }
 

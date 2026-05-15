@@ -5,10 +5,15 @@ export class AggregationService {
         const startTime = Date.now();
         const errors = [];
         try {
+            console.log('[Aggregation Service] Starting search for:', searchParams);
             const [fromLocations, toLocations] = await Promise.allSettled([
                 LocationResolver.resolveAllLocations(searchParams.from),
                 LocationResolver.resolveAllLocations(searchParams.to)
             ]);
+            console.log('[Aggregation Service] Location resolution:', {
+                fromStatus: fromLocations.status,
+                toStatus: toLocations.status
+            });
             if (fromLocations.status === 'rejected') {
                 errors.push(`Failed to resolve departure location: ${searchParams.from}`);
             }
@@ -16,6 +21,7 @@ export class AggregationService {
                 errors.push(`Failed to resolve destination location: ${searchParams.to}`);
             }
             if (fromLocations.status === 'rejected' || toLocations.status === 'rejected') {
+                console.log('[Aggregation Service] Location resolution failed, returning error');
                 return {
                     success: false,
                     data: {
@@ -28,11 +34,16 @@ export class AggregationService {
             }
             const fromLocs = fromLocations.value;
             const toLocs = toLocations.value;
+            console.log('[Aggregation Service] Resolved locations:', {
+                from: { train: fromLocs.train.length, bus: fromLocs.bus.length, flight: fromLocs.flight.length },
+                to: { train: toLocs.train.length, bus: toLocs.bus.length, flight: toLocs.flight.length }
+            });
             const hasValidRoutes = (fromLocs.train.length > 0 && toLocs.train.length > 0) ||
                 (fromLocs.bus.length > 0 && toLocs.bus.length > 0) ||
                 (fromLocs.flight.length > 0 && toLocs.flight.length > 0);
             if (!hasValidRoutes) {
                 errors.push('No valid transport routes found between specified locations');
+                console.log('[Aggregation Service] No valid routes found');
                 return {
                     success: false,
                     data: {
@@ -43,10 +54,14 @@ export class AggregationService {
                     errors
                 };
             }
+            console.log('[Aggregation Service] Fetching prices...');
             const travelOptions = await PriceServices.fetchAllPrices(fromLocs, toLocs, searchParams.date, searchParams.flightClass, searchParams.trainClass);
+            console.log('[Aggregation Service] Fetched', travelOptions.length, 'options');
             const sortedOptions = this.sortAndFilterOptions(travelOptions);
             const processingTime = Date.now() - startTime;
-            console.log(`Search completed in ${processingTime}ms, found ${sortedOptions.length} options`);
+            console.log(`[Aggregation Service] Search completed in ${processingTime}ms, found ${sortedOptions.length} options`);
+            // Return success even if no options found (APIs might not be configured)
+            // This allows the frontend to show a "No results found" message instead of an error
             return {
                 success: true,
                 data: {
@@ -58,7 +73,7 @@ export class AggregationService {
             };
         }
         catch (error) {
-            console.error('Aggregation service error:', error);
+            console.error('[Aggregation Service] Error:', error);
             errors.push('Internal server error during search');
             return {
                 success: false,

@@ -18,7 +18,7 @@ const validateSearchRequest = (req: express.Request, res: express.Response, next
   next();
 };
 
-router.get('/', validateSearchRequest, async (req, res, next) => {
+router.get('/', validateSearchRequest, async (req, res) => {
   try {
     const searchParams: SearchRequest = {
       from: req.query.from as string,
@@ -29,17 +29,34 @@ router.get('/', validateSearchRequest, async (req, res, next) => {
       trainClass: req.query.trainClass as string | undefined
     };
 
-    console.log('Search request:', searchParams);
+    console.log('[Search Route] Search request:', searchParams);
 
     const result = await AggregationService.searchTravelOptions(searchParams);
 
+    console.log('[Search Route] Result:', { success: result.success, optionsCount: result.data.options.length, errors: result.errors });
+
+    // Always return a valid JSON response, never let it throw
     if (!result.success && result.errors?.length) {
       return res.status(400).json(result);
     }
 
     res.json(result);
   } catch (error) {
-    next(error);
+    console.error('[Search Route] Error:', error);
+    // Never return 502, always return a valid JSON response
+    res.status(500).json({
+      success: false,
+      data: {
+        options: [],
+        searchParams: {
+          from: req.query.from as string,
+          to: req.query.to as string,
+          date: req.query.date as string
+        },
+        timestamp: new Date().toISOString()
+      },
+      errors: ['Internal server error. Please try again later.']
+    });
   }
 });
 
